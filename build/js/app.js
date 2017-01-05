@@ -16,15 +16,22 @@ function Game()
     "history": 23,
   };
   this.gameMode = null;
-  this.round = 0;
+  this.round = 1;
+  this.currentTurn = 1;
   this.roundQuestions = [];
   this.questionsPerRound = 0;
   this.numberOfRounds = 0;
 }
 
+Game.prototype.nextTurn = function() {
+  this.currentTurn ^= 1;
+  return (this.currentTurn + 1);
+};
+
 Game.prototype.checkAnswers = function(answer, qNumber) {
   var instance = this;
   var points = 0;
+  console.log(instance.roundQuestions[qNumber].question + ": " + qNumber);
   switch (instance.roundQuestions[qNumber].difficulty) {
     case "easy":
       points++;
@@ -45,14 +52,36 @@ Game.prototype.checkAnswers = function(answer, qNumber) {
   return (answer === correctAnswer) ? points : 0;
 };
 
+Game.prototype.DecodeQuestions = function()
+{
+  var instance = this;
+  console.log(instance.roundQuestions.length);
+  for (var questionIndex = 0; questionIndex < instance.roundQuestions.length; questionIndex++) {
+    var question = instance.roundQuestions[questionIndex];
+    for (var key in question) {
+      if (key === "incorrect_answers")
+      {
+        var incorrectAnswers = question[key];
+        for (var answerIndex = 0; answerIndex < incorrectAnswers.length; answerIndex++) {
+          incorrectAnswers[answerIndex] = atob(incorrectAnswers[answerIndex]);
+        }
+      } else {
+        var value = question[key];
+        question[key] = atob(value);
+      }
+    }
+  }
+};
+
 Game.prototype.GetQuestions = function(number, category)
 {
   var instance = this;
   var token;
   // $.get("https://www.opentdb.com/api_token.php?command=request").then(function(response) {token = response;});
-  $.get("https://www.opentdb.com/api.php?amount=" + number.toString() + "&category=" + category + "&type=multiple").then(function(response)
+  $.get("https://www.opentdb.com/api.php?amount=" + number.toString() + "&category=" + category + "&type=multiple&encode=base64").then(function(response)
   {
     instance.roundQuestions = response.results;
+    instance.DecodeQuestions();
   }).fail(function(error)
   {
     console.log(error);
@@ -62,7 +91,7 @@ Game.prototype.GetQuestions = function(number, category)
 
 Game.prototype.sortAnswers = function(qNumber) {
   var instance = this;
-  var question = instance.roundQuestions[qNumber-1];
+  var question = instance.roundQuestions[qNumber];
   var answers = [];
   answers.push(question.correct_answer);
   for (var i = 0; i < question.incorrect_answers.length; i++) {
@@ -83,23 +112,19 @@ function User(name)
 exports.UserModule = User;
 
 },{}],3:[function(require,module,exports){
-var Game = require("./../js/TriviaGame.js").TriviaGameModule;
-
-$(document).ready(function()
-{
-  
-});
-
 var User = require('./../js/User.js').UserModule;
 var Game = require("./../js/TriviaGame.js").TriviaGameModule;
 
 var nextQuestion = function(gameInstance, qNumber){
-  if (qNumber < gameInstance.numberOfRounds){
+  qNumber++;
+  if (qNumber < gameInstance.questionsPerRound){
     setTimeout(function() {
       $('#answers1').empty();
       $('#answers2').empty();
       $('#question').empty();
-      $('#question').text(gameInstance.roundQuestions[qNumber-1].question);
+      $("#question").removeClass();
+      $("#question").addClass(gameInstance.roundQuestions[qNumber].difficulty);
+      $('#question').text(gameInstance.roundQuestions[qNumber].question);
       var answers = gameInstance.sortAnswers(qNumber);
       for (var i = 0; i < answers.length; i++) {
         $('#answers1').append("<input type='radio' name='answer1' value='"+ answers[i] + "'>" + answers[i] + "</br>");
@@ -107,27 +132,42 @@ var nextQuestion = function(gameInstance, qNumber){
       }
       // figure out way to have one answer checked by default
     }, 1000);
-  } else {
+  } else if (gameInstance.round < gameInstance.numberOfRounds){
+    console.log("next round");
     gameInstance.round++;
-    //go to inter-round screen, hide game screen
+    qNumber = 0;
+    $("#user-turn").text(gameInstance.nextTurn());
+    $("#inter-round-screen").show();
+    $("#round-screen").hide();
+  } else {
+    $("#game-container").hide();
+    $(".restart").show();
+    qNumber = 0;
   }
-}
+  return qNumber;
+};
 
 $(document).ready(function()
 {
-  var game = new Game();
+  var game = null;
   var player1 = null;
   var player2 = null;
+  var qNumber = -1;
   $('#settings').submit(function(event) {
     event.preventDefault();
-    $("#user-turn").text((game.round%2)+1);
+    game = new Game();
+    qNumber = -1;
+    $("#user-turn").text(game.nextTurn());
     player1 = new User($('#playerName1').val());
     $(".player1Name").text(player1.name);
     player2 = new User($('#playerName2').val());
     $(".player2Name").text(player2.name);
     game.questionsPerRound = parseInt($('#numQuestions').val());
     game.numberOfRounds = parseInt($('#numRounds').val());
-    //#settings-container hide
+    $("#settings-container").hide();
+    $("#game-container").show();
+    $("#inter-round-screen").show();
+    $("#round-screen").hide();
     $("#categorySelect").empty();
     for(var key in game.categories) {
       if (!game.categories.hasOwnProperty(key)) {
@@ -137,22 +177,57 @@ $(document).ready(function()
     }
   });
 
-  var qNumber = 1;
   $("#get-questions").click(function(){
-    qNumber = 1;
+    qNumber = -1;
     game.GetQuestions(game.questionsPerRound, $("#categorySelect").val());
-    nextQuestion(game, qNumber);
+    $("#inter-round-screen").hide();
+    $("#round-screen").show();
+    qNumber = nextQuestion(game, qNumber);
   });
 
   $('#submitAnswers').click(function() {
-    qNumber++;
+    var player1Score = player1.score;
+    var player2Score = player2.score;
     var player1Answer = $('#answers1 input:radio:checked').val();
     var player2Answer = $('#answers2 input:radio:checked').val();
-    player1.score += game.checkAnswers(player1Answer, game.round);
-    player2.score += game.checkAnswers(player2Answer, game.round);
+    player1.score += game.checkAnswers(player1Answer, qNumber);
+    player2.score += game.checkAnswers(player2Answer, qNumber);
+    if (player1Score != player1.score) {
+      $('.player1ScoreContainer').addClass("greenHighlight");
+      setTimeout(function(){
+        $('.player1ScoreContainer').removeClass("greenHighlight");
+      }, 1000);
+    }
+    else {
+      $('.player1ScoreContainer').addClass("redHighlight");
+      setTimeout(function(){
+        $('.player1ScoreContainer').removeClass("redHighlight");
+      }, 1000);
+    }
+    if (player2Score != player2.score) {
+      $('.player2ScoreContainer').addClass("greenHighlight");
+      setTimeout(function(){
+        $('.player2ScoreContainer').removeClass("greenHighlight");
+      }, 1000);
+    }
+    else {
+      $('.player2ScoreContainer').addClass("redHighlight");
+      setTimeout(function(){
+        $('.player2ScoreContainer').removeClass("redHighlight");
+      }, 1000);
+    }
     $("#player1Score").text(player1.score);
     $("#player2Score").text(player2.score);
-    nextQuestion(game, qNumber);
+    qNumber = nextQuestion(game, qNumber);
+  });
+
+  $(".restart").click(function() {
+    $("#player1Name").attr("value", player1.name);
+    $("#player2Name").attr("value", player2.name);
+    $(".restart").hide();
+    $("#settings-container").show();
+    $("#player1Score").text("");
+    $("#player2Score").text("");
   });
 });
 

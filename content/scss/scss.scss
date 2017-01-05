@@ -1,0 +1,23 @@
+#game-container, #round-screen, .restart {
+  display: none;
+}
+
+.greenHighlight {
+  background-color: green;
+}
+
+.redHighlight {
+  background-color: red;
+}
+
+.easy {
+  color: green;
+}
+
+.medium {
+  color: orange;
+}
+
+.hard {
+  color: red;
+}
