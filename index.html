@@ -12,9 +12,9 @@
       <div id="settings-container" class="well">
         <form id="settings">
           <label for="">Player 1 Name</label>
-          <input id="playerName1" type="text" value="test" required>
+          <input id="playerName1" type="text" value="Dave" required>
           <label for="">Player 2 Name</label>
-          <input id="playerName2" type="text" value="test" required>
+          <input id="playerName2" type="text" value="Frank" required>
           <label for="">Number of rounds</label>
           <input id="numRounds" type="number" value="2" required>
           <label for="">Questions per round</label>
@@ -56,6 +56,14 @@
           <div id="submitAnswers" class="btn btn-primary center-block">Submit
 
           </div>
+        </div>
+      </div>
+      <div class="row scores">
+        <div class="col-xs-6 col-sm-6 col-md-6 player1ScoreContainer">
+          <p><h4 class="player1Name"></h4> score: <span id="player1Score"></span></p>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 player2ScoreContainer">
+          <p><h4 class="player2Name"></h4> score: <span id="player2Score"></span></p>
         </div>
       </div>
     </div>

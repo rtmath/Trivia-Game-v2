@@ -40,8 +40,7 @@ Game.prototype.checkAnswers = function(answer, qNumber) {
       break;
   }
   var correctAnswer = instance.roundQuestions[qNumber].correct_answer;
-  console.log(correctAnswer);
-  console.log(answer);
+  console.log("Correct answer is " + correctAnswer);
   return (answer === correctAnswer) ? points : 0;
 };
 
@@ -53,7 +52,6 @@ Game.prototype.GetQuestions = function(number, category)
   $.get("https://www.opentdb.com/api.php?amount=" + number.toString() + "&category=" + category + "&type=multiple").then(function(response)
   {
     instance.roundQuestions = response.results;
-    $("#question").text(instance.roundQuestions[0].question);
   }).fail(function(error)
   {
     console.log(error);
