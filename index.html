@@ -9,18 +9,54 @@
   </head>
   <body>
     <div class="container">
-      <div class="well">
+      <div id="settings-container" class="well">
         <form id="settings">
           <label for="">Player 1 Name</label>
-          <input id="playerName1" type="text" required>
+          <input id="playerName1" type="text" value="test" required>
           <label for="">Player 2 Name</label>
-          <input id="playerName2" type="text" required>
+          <input id="playerName2" type="text" value="test" required>
           <label for="">Number of rounds</label>
-          <input id="numRounds" type="number" required>
+          <input id="numRounds" type="number" value="2" required>
           <label for="">Questions per round</label>
-          <input id="numQuestions" type="number" required>
+          <input id="numQuestions" type="number" value="2" required>
           <button type="submit" name="button">Play!</button>
         </form>
+      </div>
+      <div id="game-container" class="well">
+        <div class="inter-round-screen">
+          <span>Player <span id="user-turn"></span>, pick your category:</span>
+          <select id="categorySelect">
+            <option disabled>Choose category..</option>
+          </select>
+          <button type="button" id="get-questions">Start Round</button>
+        </div>
+        <div class="round-screen">
+          <p>
+            Question:
+          </p>
+          <span id="question"></span><br>
+          <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 panel">
+              <h4 class="player1Name">Player 1:</h4>
+              <p>
+                Answers
+              </p>
+              <form id="answers1">
+              </form>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 panel">
+              <h4 class="player2Name">Player 2:</h4>
+              <p>
+                Answers
+              </p>
+              <form id="answers2">
+              </form>
+            </div>
+          </div>
+          <div id="submitAnswers" class="btn btn-primary center-block">Submit
+
+          </div>
+        </div>
       </div>
     </div>
   </body>

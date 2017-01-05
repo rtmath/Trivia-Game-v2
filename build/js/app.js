@@ -18,18 +18,59 @@ function Game()
   this.gameMode = null;
   this.round = 0;
   this.roundQuestions = [];
+  this.questionsPerRound = 0;
+  this.numberOfRounds = 0;
 }
+
+Game.prototype.checkAnswers = function(answer, qNumber) {
+  var instance = this;
+  var points = 0;
+  switch (instance.roundQuestions[qNumber].difficulty) {
+    case "easy":
+      points++;
+      break;
+    case "medium":
+      points += 2;
+      break;
+    case "hard":
+      points += 3;
+      break;
+    default:
+      console.log("Difficulty error");
+      points++;
+      break;
+  }
+  var correctAnswer = instance.roundQuestions[qNumber].correct_answer;
+  console.log(correctAnswer);
+  console.log(answer);
+  return (answer === correctAnswer) ? points : 0;
+};
 
 Game.prototype.GetQuestions = function(number, category)
 {
   var instance = this;
-  $.get("https://www.opentdb.com/api.php?amount=" + number.toString() + "&category=" + instance.categories[category].toString()).then(function(response)
+  var token;
+  // $.get("https://www.opentdb.com/api_token.php?command=request").then(function(response) {token = response;});
+  $.get("https://www.opentdb.com/api.php?amount=" + number.toString() + "&category=" + category + "&type=multiple").then(function(response)
   {
     instance.roundQuestions = response.results;
+    $("#question").text(instance.roundQuestions[0].question);
   }).fail(function(error)
   {
-    //show error
+    console.log(error);
   });
+
+};
+
+Game.prototype.sortAnswers = function(qNumber) {
+  var instance = this;
+  var question = instance.roundQuestions[qNumber-1];
+  var answers = [];
+  answers.push(question.correct_answer);
+  for (var i = 0; i < question.incorrect_answers.length; i++) {
+    answers.push(question.incorrect_answers[i]);
+  }
+  return answers.sort();
 };
 
 exports.TriviaGameModule = Game;
@@ -52,15 +93,51 @@ $(document).ready(function()
 });
 
 var User = require('./../js/User.js').UserModule;
+var Game = require("./../js/TriviaGame.js").TriviaGameModule;
 
 $(document).ready(function()
 {
+  var game = new Game();
+  var player1 = null;
+  var player2 = null;
   $('#settings').submit(function(event) {
     event.preventDefault();
-    var player1 = $('#playerName1').val();
-    var player2 = $('#playerName2').val();
-    var numRounds = $('#numRounds').val();
-    var numQuestions = $('#numQuestions').val();
+    player1 = new User($('#playerName1').val());
+    $(".player1Name").text(player1.name);
+    player2 = new User($('#playerName2').val());
+    $(".player2Name").text(player2.name);
+    game.questionsPerRound = parseInt($('#numQuestions').val());
+    game.numberOfRounds = parseInt($('#numRounds').val());
+    //#settings-container hide
+    $("#categorySelect").empty();
+    for(var key in game.categories) {
+      if (!game.categories.hasOwnProperty(key)) {
+        continue;
+      }
+      $("#categorySelect").append('<option value="' + game.categories[key] + '">' + key + "</option>");
+    }
+  });
+
+  $("#get-questions").click(function(){
+    game.GetQuestions(game.questionsPerRound, $("#categorySelect").val());
+    setTimeout(function() {
+      var answers = game.sortAnswers(1);
+      for (var i = 0; i < answers.length; i++) {
+        $('#answers1').append("<input type='radio' name='answer1' value='"+ answers[i] + "'>" + answers[i] + "</br>");
+        $('#answers2').append("<input type='radio' name='answer2' value='"+ answers[i] + "'>" + answers[i] + "</br>");
+      }
+      // $("#answers1:first-child").attr("checked", "checked");
+      // $("#answers2:first-child").attr("checked", "checked");
+    }, 1000);
+
+    $('#submitAnswers').click(function() {
+      var player1Answer = $('#answers1 input:radio:checked').val();
+      var player2Answer = $('#answers2 input:radio:checked').val();
+      player1.score += game.checkAnswers(player1Answer, game.round);
+      player2.score += game.checkAnswers(player2Answer, game.round);
+      console.log(player1.score);
+      console.log(player2.score);
+    });
   });
 });
 
