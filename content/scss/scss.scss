@@ -1,5 +1,28 @@
-#game-container, #round-screen, .restart {
+#game-container, #round-screen, #inter-round-screen, .restart {
   display: none;
+  width: 100%;
+}
+
+
+
+.pageheader {
+  margin: 100px 0px 50px 0px;
+  text-align: center;
+}
+
+.fullwidth {
+  width: 100%;
+  display: flex;
+}
+
+.halfwidth {
+  flex: 1 50%;
+  text-align: center;
+}
+
+.correct-answer, .player1ScoreContainer, .player2ScoreContainer {
+  display: none;
+  text-align: center;
 }
 
 .greenHighlight {

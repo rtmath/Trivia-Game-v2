@@ -6,21 +6,51 @@
     <script type="text/javascript" src="build/js/vendor.min.js"></script>
     <script type="text/javascript" src="build/js/app.js"></script>
     <meta charset="utf-8">
-    <title>Trivia</title>
+    <title>Trivial</title>
   </head>
   <body>
     <div class="container">
+      <div class="pageheader">
+        <h1>Trivial</h1>
+      </div>
+      <div class="row scores">
+        <div class="col-xs-6 col-sm-6 col-md-6 player1ScoreContainer">
+          <p><h4 class="player1Name"></h4> Score: <span id="player1Score"></span></p>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 player2ScoreContainer">
+          <p><h4 class="player2Name"></h4> Score: <span id="player2Score"></span></p>
+        </div>
+      </div>
+      <div class="restart">
+        <button type="button" class="btn btn-primary center-block" id="restart">New Game</button>
+      </div>
+      <div class="correct-answer">
+
+      </div>
       <div id="settings-container" class="well">
         <form id="settings">
-          <label for="">Player 1</label>
-          <input id="playerName1" type="text" placeholder="Enter your name here" required>
-          <label for="">Player 2</label>
-          <input id="playerName2" type="text" placeholder="Enter your name here" required>
-          <label for="">Number of rounds</label>
-          <input id="numRounds" type="number" value="2" required>
-          <label for="">Questions per round</label>
-          <input id="numQuestions" type="number" value="2" required>
-          <button type="submit" name="button">Play!</button>
+          <div class="fullwidth">
+            <div class="halfwidth">
+              <label for="">Player 1</label><br>
+              <input id="playerName1" type="text" placeholder="Enter your name here" required>
+            </div>
+            <div class="halfwidth">
+              <label for="">Player 2</label><br>
+              <input id="playerName2" type="text" placeholder="Enter your name here" required>
+            </div>
+          </div>
+          <hr>
+          <div class="fullwidth">
+            <div class="halfwidth">
+              <label for="">Number of rounds</label><br>
+              <input id="numRounds" type="number" value="2" required>
+            </div>
+            <div class="halfwidth">
+              <label for="">Questions per round</label><br>
+              <input id="numQuestions" type="number" value="2" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary center-block">Play!</button>
         </form>
       </div>
       <div id="game-container" class="well">
@@ -29,7 +59,7 @@
           <select id="categorySelect">
             <option disabled>Choose category..</option>
           </select>
-          <button type="button" id="get-questions">Start Round</button>
+          <button type="button" id="get-questions" class="btn btn-primary center-block">Start Round</button>
         </div>
         <div id="round-screen">
           <p>
@@ -56,17 +86,6 @@
 
           </div>
         </div>
-      </div>
-      <div class="row scores">
-        <div class="col-xs-6 col-sm-6 col-md-6 player1ScoreContainer">
-          <p><h4 class="player1Name"></h4> score: <span id="player1Score"></span></p>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 player2ScoreContainer">
-          <p><h4 class="player2Name"></h4> score: <span id="player2Score"></span></p>
-        </div>
-      </div>
-      <div class="restart">
-        <button type="button" class="btn btn-primary" id="restart">New Game</button>
       </div>
     </div>
   </body>

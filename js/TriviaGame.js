@@ -47,7 +47,6 @@ Game.prototype.checkAnswers = function(answer, qNumber) {
       break;
   }
   var correctAnswer = instance.roundQuestions[qNumber].correct_answer;
-  console.log("Correct answer is " + correctAnswer);
   return (answer === correctAnswer) ? points : 0;
 };
 

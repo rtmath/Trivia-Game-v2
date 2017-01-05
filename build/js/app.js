@@ -48,7 +48,6 @@ Game.prototype.checkAnswers = function(answer, qNumber) {
       break;
   }
   var correctAnswer = instance.roundQuestions[qNumber].correct_answer;
-  console.log("Correct answer is " + correctAnswer);
   return (answer === correctAnswer) ? points : 0;
 };
 
@@ -119,28 +118,28 @@ var nextQuestion = function(gameInstance, qNumber){
   qNumber++;
   if (qNumber < gameInstance.questionsPerRound){
     setTimeout(function() {
-      $('#answers1').empty();
-      $('#answers2').empty();
       $('#question').empty();
       $("#question").removeClass();
       $("#question").addClass(gameInstance.roundQuestions[qNumber].difficulty);
       $('#question').text(gameInstance.roundQuestions[qNumber].question);
+      $('#answers1').empty();
+      $('#answers2').empty();
+      $('#round-screen').slideDown(2000);
       var answers = gameInstance.sortAnswers(qNumber);
       for (var i = 0; i < answers.length; i++) {
         $('#answers1').append("<input type='radio' name='answer1' value='"+ answers[i] + "'>" + answers[i] + "</br>");
         $('#answers2').append("<input type='radio' name='answer2' value='"+ answers[i] + "'>" + answers[i] + "</br>");
       }
-      // figure out way to have one answer checked by default
     }, 1000);
   } else if (gameInstance.round < gameInstance.numberOfRounds){
     console.log("next round");
     gameInstance.round++;
     qNumber = 0;
     $("#user-turn").text(gameInstance.nextTurn());
-    $("#inter-round-screen").show();
-    $("#round-screen").hide();
+    $("#inter-round-screen").slideDown(1500);
+    $("#round-screen").slideUp(1500);
   } else {
-    $("#game-container").hide();
+    $("#game-container").slideUp(2400);
     $(".restart").show();
     qNumber = 0;
   }
@@ -181,7 +180,10 @@ $(document).ready(function()
     qNumber = -1;
     game.GetQuestions(game.questionsPerRound, $("#categorySelect").val());
     $("#inter-round-screen").hide();
-    $("#round-screen").show();
+    $("#round-screen").slideDown(2400);
+    $('.player1ScoreContainer').fadeIn(2400);
+    $('.player2ScoreContainer').fadeIn(2400);
+    $('.correct-answer').show();
     qNumber = nextQuestion(game, qNumber);
   });
 
@@ -192,32 +194,37 @@ $(document).ready(function()
     var player2Answer = $('#answers2 input:radio:checked').val();
     player1.score += game.checkAnswers(player1Answer, qNumber);
     player2.score += game.checkAnswers(player2Answer, qNumber);
+    var correctAnswer = game.roundQuestions[qNumber].correct_answer
+    $('.correct-answer').html("<br>Correct answer: <strong>" + correctAnswer + "</strong>");
     if (player1Score != player1.score) {
       $('.player1ScoreContainer').addClass("greenHighlight");
       setTimeout(function(){
         $('.player1ScoreContainer').removeClass("greenHighlight");
-      }, 1000);
+        $('.correct-answer').empty();
+      }, 4000);
     }
     else {
       $('.player1ScoreContainer').addClass("redHighlight");
       setTimeout(function(){
         $('.player1ScoreContainer').removeClass("redHighlight");
-      }, 1000);
+        $('.correct-answer').empty();
+      }, 4000);
     }
     if (player2Score != player2.score) {
       $('.player2ScoreContainer').addClass("greenHighlight");
       setTimeout(function(){
         $('.player2ScoreContainer').removeClass("greenHighlight");
-      }, 1000);
+      }, 4000);
     }
     else {
       $('.player2ScoreContainer').addClass("redHighlight");
       setTimeout(function(){
         $('.player2ScoreContainer').removeClass("redHighlight");
-      }, 1000);
+      }, 4000);
     }
     $("#player1Score").text(player1.score);
     $("#player2Score").text(player2.score);
+    $("#round-screen").slideUp(1000);
     qNumber = nextQuestion(game, qNumber);
   });
 
@@ -225,6 +232,8 @@ $(document).ready(function()
     $("#player1Name").attr("value", player1.name);
     $("#player2Name").attr("value", player2.name);
     $(".restart").hide();
+    $('.player1ScoreContainer').hide();
+    $('.player2ScoreContainer').hide();
     $("#settings-container").show();
     $("#player1Score").text("");
     $("#player2Score").text("");
