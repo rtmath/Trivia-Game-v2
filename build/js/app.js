@@ -3,17 +3,17 @@ function Game()
 {
   this.gameModes = ["ironman", "multiplayer"];
   this.categories = {
-    "general knowledge": 9,
-    "books": 10,
-    "film": 11,
-    "music": 12,
-    "video games": 15,
-    "science and nature": 17,
-    "computer science": 18,
-    "mythology": 20,
-    "sports": 21,
-    "geography": 22,
-    "history": 23,
+    "General Knowledge": 9,
+    "Books": 10,
+    "Film": 11,
+    "Music": 12,
+    "Video Games": 15,
+    "Science and Nature": 17,
+    "Computer Science": 18,
+    "Mythology": 20,
+    "Sports": 21,
+    "Geography": 22,
+    "History": 23,
   };
   this.gameMode = null;
   this.round = 1;
@@ -127,8 +127,8 @@ var nextQuestion = function(gameInstance, qNumber){
       $('#round-screen').slideDown(2000);
       var answers = gameInstance.sortAnswers(qNumber);
       for (var i = 0; i < answers.length; i++) {
-        $('#answers1').append("<input type='radio' name='answer1' value='"+ answers[i] + "'>" + answers[i] + "</br>");
-        $('#answers2').append("<input type='radio' name='answer2' value='"+ answers[i] + "'>" + answers[i] + "</br>");
+        $('#answers1').append("<label><input type='radio' name='answer1' value='"+ answers[i] + "'> <span class='labelinput'>" + answers[i] + "</label></br>");
+        $('#answers2').append("<label><input type='radio' name='answer2' value='"+ answers[i] + "'> <span class='labelinput'>" + answers[i] + "</span></label></br>");
       }
     }, 1000);
   } else if (gameInstance.round < gameInstance.numberOfRounds){
@@ -139,7 +139,7 @@ var nextQuestion = function(gameInstance, qNumber){
     $("#inter-round-screen").slideDown(1500);
     $("#round-screen").slideUp(1500);
   } else {
-    $("#game-container").slideUp(2400);
+    $("#game-container").slideUp();
     $(".restart").show();
     qNumber = 0;
   }
@@ -152,6 +152,7 @@ $(document).ready(function()
   var player1 = null;
   var player2 = null;
   var qNumber = -1;
+
   $('#settings').submit(function(event) {
     event.preventDefault();
     game = new Game();
@@ -194,8 +195,8 @@ $(document).ready(function()
     var player2Answer = $('#answers2 input:radio:checked').val();
     player1.score += game.checkAnswers(player1Answer, qNumber);
     player2.score += game.checkAnswers(player2Answer, qNumber);
-    var correctAnswer = game.roundQuestions[qNumber].correct_answer
-    $('.correct-answer').html("<br>Correct answer: <strong>" + correctAnswer + "</strong>");
+    var correctAnswer = game.roundQuestions[qNumber].correct_answer;
+    $('.correct-answer').text("Correct answer: " + correctAnswer);
     if (player1Score != player1.score) {
       $('.player1ScoreContainer').addClass("greenHighlight");
       setTimeout(function(){

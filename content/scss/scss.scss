@@ -1,13 +1,116 @@
-#game-container, #round-screen, #inter-round-screen, .restart {
+$player1Color: rgba(188, 143, 143, 1); // rosy brown
+$player2Color: rgba(32, 178, 170, 1); //light sea green
+// $questionColor: black;
+
+#game-container, #round-screen, #inter-round-screen {
   display: none;
-  width: 100%;
+  height: 350px;
 }
 
+#round-screen {
+  height: 350px;
+}
 
+#question {
+  // color: white;
+  // background: linear-gradient(to right, transparent, $questionColor, transparent);
+  // background-color: black;
+  text-align: center;
+  // text-shadow: 1px 1px 1px white;
+  height: 30px;
+  margin-bottom: 40px;
+}
+
+#settings-container {
+  text-align: center;
+  color: white;
+  input {
+    color: black;
+  }
+}
+
+#inter-round-screen {
+  color: white;
+  input {
+    color: black;
+  }
+}
+
+#submitAnswers {
+  width: 7%;
+}
+
+body {
+  background-color: grey;
+}
+
+select {
+  margin-bottom: 20px;
+}
+
+.well {
+  background-color: black;
+  border: 1px solid darkgrey;
+  border-radius: 30px;
+}
+
+.panel {
+  background-color: rgba(255, 255, 255, 1);
+  text-align: center;
+  border-radius: 10px;
+  border: 0px;
+}
+
+.labelinput {
+  margin-left: 10px;
+}
+
+.correct-answer {
+  border: 1px solid transparent;
+  overflow: hidden;
+  height: 30px;
+}
+
+.settings-label, #inter-round-screen {
+  text-align: center;
+}
 
 .pageheader {
   margin: 100px 0px 50px 0px;
   text-align: center;
+}
+
+.score-text {
+  text-shadow: 1px 1px 1px black;
+}
+
+.player1Name, .player2Name {
+  text-shadow: 1px 1px 1px black;
+  font-size: 2em;
+}
+
+.player1Color {
+  color: $player1Color;
+  background: transparent;
+}
+
+.panel.player1Color {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border: 5px solid black;
+  box-shadow: inset 1px 1px 1px 1px $player1Color;
+}
+
+.player2Color {
+  color: $player2Color;
+  background: transparent;
+}
+
+.panel.player2Color {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border: 5px solid black;
+  box-shadow: inset 1px 1px 1px 1px $player2Color;
 }
 
 .fullwidth {
@@ -20,17 +123,23 @@
   text-align: center;
 }
 
-.correct-answer, .player1ScoreContainer, .player2ScoreContainer {
+.correct-answer, .player1ScoreContainer, .player2ScoreContainer, .restart {
   display: none;
   text-align: center;
 }
 
+.scores {
+  height: 70px;
+}
+
 .greenHighlight {
-  background-color: green;
+  background: linear-gradient(to right, transparent, green, transparent);
+  color: white;
 }
 
 .redHighlight {
-  background-color: red;
+  background: linear-gradient(to right, transparent, darkred, transparent);
+  color: white;
 }
 
 .easy {
@@ -42,5 +151,5 @@
 }
 
 .hard {
-  color: red;
+  color: crimson;
 }

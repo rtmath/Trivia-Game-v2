@@ -2,17 +2,17 @@ function Game()
 {
   this.gameModes = ["ironman", "multiplayer"];
   this.categories = {
-    "general knowledge": 9,
-    "books": 10,
-    "film": 11,
-    "music": 12,
-    "video games": 15,
-    "science and nature": 17,
-    "computer science": 18,
-    "mythology": 20,
-    "sports": 21,
-    "geography": 22,
-    "history": 23,
+    "General Knowledge": 9,
+    "Books": 10,
+    "Film": 11,
+    "Music": 12,
+    "Video Games": 15,
+    "Science and Nature": 17,
+    "Computer Science": 18,
+    "Mythology": 20,
+    "Sports": 21,
+    "Geography": 22,
+    "History": 23,
   };
   this.gameMode = null;
   this.round = 1;
